@@ -1,0 +1,26 @@
+cff-version: 1.2.0
+message: "Please cite this software and the associated UNT-STLLM paper when available."
+type: software
+title: UNT-STLLM
+version: 0.1.0
+repository-code: https://github.com/aGGGBo/UNT-STLLM
+url: https://github.com/aGGGBo/UNT-STLLM
+abstract: "Reproduction of the UNT-STLLM results in Table II across four traffic forecasting tasks."
+authors:
+  - family-names: Xiang
+    given-names: Fengtao
+  - family-names: Peng
+    given-names: Xiongfei
+  - family-names: Li
+    given-names: Ruikang
+  - family-names: Zheng
+    given-names: Maofan
+  - family-names: Chen
+    given-names: Shaofei
+  - family-names: Yu
+    given-names: Yang
+keywords:
+  - traffic forecasting
+  - node relations
+  - pretrained language models
+  - low-rank adaptation

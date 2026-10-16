@@ -1,0 +1,62 @@
+{
+  "files": {
+    "data/taxi_pick/train.npz": {
+      "bytes": 18063436,
+      "sha256": "241be29e40d663c9d4138f226d0f1c3b65bf86570d97a4dfa59915795c4cce9b"
+    },
+    "data/taxi_pick/val.npz": {
+      "bytes": 5980071,
+      "sha256": "7cb6f6cc9a46f322de1c7730614144b31b7163f34c7e9b5f8aba1d04d5402e2c"
+    },
+    "data/taxi_pick/test.npz": {
+      "bytes": 5956245,
+      "sha256": "59524fa0b80f623419b1a9acc003ea966ead9fa7e6e6ef00106ad60bc1a76bfe"
+    },
+    "data/taxi_drop/train.npz": {
+      "bytes": 18081559,
+      "sha256": "01bfe81c2f4420f738eec70ee925d22def158aef1cda6ebbfff444345edbafce"
+    },
+    "data/taxi_drop/val.npz": {
+      "bytes": 5987426,
+      "sha256": "d207acc4ee2a3f3848d1016707b6538317f5ffd9c48b8563d31ffa0c3d1f9d51"
+    },
+    "data/taxi_drop/test.npz": {
+      "bytes": 5962516,
+      "sha256": "27fe77c46524d13c5ae2ed291a650fa1f5d0717220f45e89cf78451e3de1f74e"
+    },
+    "data/bike_pick/train.npz": {
+      "bytes": 9776040,
+      "sha256": "e94ac83f2cd5a95686f8e41e9fe9cf4fa49928269bb490aff78134852a1b5602"
+    },
+    "data/bike_pick/val.npz": {
+      "bytes": 3526214,
+      "sha256": "d93492857726cd6d72280441e92762cdf38d6866358c7389468f9388347ececf"
+    },
+    "data/bike_pick/test.npz": {
+      "bytes": 3650236,
+      "sha256": "765b0fa348e89794e729d6760acc6092b24e8caf92c0f3f51e527c6ce272472b"
+    },
+    "data/bike_drop/train.npz": {
+      "bytes": 9796347,
+      "sha256": "53f822cf78c23d3a05488d8342b6a71ca90c3e8f21d481ba18adcda662dce4c4"
+    },
+    "data/bike_drop/val.npz": {
+      "bytes": 3523917,
+      "sha256": "21e9b76af1538ba0e0fe313a04c0aa5a85d1ab1c75df6fbd367bd50ba3234525"
+    },
+    "data/bike_drop/test.npz": {
+      "bytes": 3650736,
+      "sha256": "1e219411e1024f97c6245598c7bc3982265d412ea11bf1c1ee9fff4cdfffb2df"
+    },
+    "models/gpt2-small/config.json": {
+      "bytes": 665,
+      "sha256": "0daed7749b4f02b8f76240d5444551d7b08712dab4d0adb8239c56ba823bb7b4"
+    },
+    "models/gpt2-small/pytorch_model.bin": {
+      "bytes": 548118077,
+      "sha256": "7c5d3f4b8b76583b422fcb9189ad6c89d5d97a094541ce8932dce3ecabde1421"
+    }
+  },
+  "data_source": "https://github.com/CoArrayLiu/STLLMPlus",
+  "download": "https://drive.google.com/drive/folders/1iif59LObrPu-QrpL8Y6lWeajbn_gRf7v?usp=drive_link"
+}

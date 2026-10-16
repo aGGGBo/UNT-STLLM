@@ -1,0 +1,66 @@
+{
+  "model": "UNT-STLLM",
+  "protocol": "table2-full",
+  "tasks": {
+    "taxi_pick": 266,
+    "taxi_drop": 266,
+    "bike_pick": 250,
+    "bike_drop": 250
+  },
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030
+  ],
+  "epochs": 250,
+  "batch_size": 20,
+  "input_steps": 12,
+  "forecast_steps": 12,
+  "input_channels": 3,
+  "cue_width": 256,
+  "backbone_width": 768,
+  "blocks": 5,
+  "heads": 12,
+  "relation_width": 192,
+  "relation_blocks": [
+    3,
+    4
+  ],
+  "attention": "bidirectional",
+  "relation": "dynamic pre-softmax",
+  "lora_rank": 8,
+  "lora_alpha": 16,
+  "lora_dropout": 0.0,
+  "feature_dropout": 0.1,
+  "optimizer": "Ranger with GC and Lookahead",
+  "learning_rate": 0.003,
+  "weight_decay": 0.0001,
+  "betas": [
+    0.95,
+    0.999
+  ],
+  "optimizer_epsilon": 1e-05,
+  "gradient_clip_norm": 5,
+  "frequency_weight": 0.024,
+  "kl_encoder_scale": 0.001,
+  "kl_schedule_max": 0.001,
+  "kl_effective_max": 1e-06,
+  "kl_annealing_epochs": 50,
+  "restore_patience": 12,
+  "restore_factor": 0.5,
+  "restore_optimizer_state": false,
+  "scaler": "global training-input measurement mean and population SD",
+  "model_selection": "unweighted mean of padded validation-batch MAE",
+  "test_aggregation": "compute each horizon then arithmetic mean",
+  "metric_mask": "truth > 0",
+  "pretrained_initialization": "local GPT2-small",
+  "reference_environment": {
+    "python": "3.11.10",
+    "torch": "2.5.1+cu121",
+    "transformers": "4.40.2",
+    "numpy": "2.1.2 (one original host used a different NumPy version)",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  }
+}
