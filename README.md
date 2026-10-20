@@ -1,61 +1,143 @@
 # UNT-STLLM
 
-UNT-STLLM将交通观测、时间信息与节点编码表示为节点token，通过动态关系偏置、双向节点注意力和LoRA完成交通需求预测，无需预定义邻接矩阵。
+[English](README.md) | [简体中文](README.zh-CN.md)
 
-本仓库提供论文Table II中 **UNT-STLLM一行** 的复现实现，覆盖NYCTaxi与CHBike的pick-up、drop-off四项任务。每项任务使用2026–2030五个固定种子、完整训练集、250轮训练。仓库包含模型、训练、评估和汇总入口，不包含外部基线、历史模型、迁移实验或可视化实验。
+**Unified Node Tokenization in Large Language Models for Spatiotemporal Forecasting**
 
-数据、GPT2权重和训练结果均不随代码分发。
+UNT-STLLM forecasts traffic demand without a predefined adjacency matrix. Observation histories, calendar features and node identities are encoded as node tokens. Learned relation biases guide bidirectional attention in a pretrained GPT-2 backbone, with low-rank adaptation of selected attention projections.
 
-## 开始复现
+This repository implements the **UNT-STLLM row in Table II** across four tasks: NYCTaxi pick-up, NYCTaxi drop-off, CHBike pick-up and CHBike drop-off. The default experiment uses five fixed seeds per task, for **20 training runs** in total.
 
-建议环境为Python 3.11、PyTorch 2.5.1、Transformers 4.40.2和NumPy 2.1.2。GPU环境需匹配PyTorch所使用的CUDA构建；原实验使用RTX 3090。安装前请按自己的CUDA环境选择PyTorch安装源。
+## Quick start
 
 ```bash
+git clone https://github.com/aGGGBo/UNT-STLLM.git
+cd UNT-STLLM
 python -m pip install -r requirements.txt
 python -m unittest discover -s tests -v
 ```
 
-从[STLLM+官方仓库](https://github.com/CoArrayLiu/STLLMPlus)提供的[交通数据共享目录](https://drive.google.com/drive/folders/1iif59LObrPu-QrpL8Y6lWeajbn_gRf7v?usp=drive_link)获取预处理文件，将四个任务的`train.npz`、`val.npz`、`test.npz`分别放入`data/<任务名>/`。GPT2-small本地文件放入`models/gpt2-small/`。完整目录和复制方式见[复现指南](docs/复现指南.md)。
+The reference environment uses Python 3.11, PyTorch 2.5.1 with CUDA 12.1, Transformers 4.40.2 and NumPy 2.1.2. The paper experiments used NVIDIA RTX 3090 GPUs. Select the appropriate PyTorch installation for your CUDA environment before installing the remaining dependencies.
+
+Prepare the datasets and local GPT-2 files as described below, then run:
 
 ```bash
 python run.py check
-python run.py smoke --tasks taxi_pick bike_pick --seeds 2026
+python run.py smoke --tasks taxi_pick bike_pick --seeds 2026 --batch-size 20
 python run.py train --resume
 python run.py summary
 ```
 
-`smoke`各执行一个训练批次和一个验证批次，包含反向与优化器更新，不读取test；`train`默认顺序完成全部20个正式单元。`summary`汇总五种子的均值和样本标准差，缺失或不一致结果返回非零退出码。`--resume`跳过已完整完成且签名一致的单元，中断的单元从第1轮重新训练。
+Run all commands from the repository root with the same Python environment. `check` validates the required assets. `smoke` performs one training batch and one validation batch per selected task, including backpropagation and an optimizer update. Formal training uses the full training split and selects the model by validation MAE before evaluating the test split.
 
-## 配置与参考结果
+## Data and pretrained weights
 
-`configs/table2.json`记录固定复现协议，代码按该协议实现；该文件不是通用超参数搜索接口。`configs/assets.json`记录所需文件的大小和SHA256，检查会一次列出所有问题。数据及权重不自动下载。
+Download the preprocessed NYCTaxi and CHBike files from the [STLLM+ repository](https://github.com/CoArrayLiu/STLLMPlus) and its [data directory](https://drive.google.com/drive/folders/1iif59LObrPu-QrpL8Y6lWeajbn_gRf7v?usp=drive_link). Keep the supplied NPZ files and train/validation/test partitions unchanged.
 
-下表为论文对应的历史五种子均值，用于核对任务与指标单位；完整精度和样本标准差见`configs/reference_metrics.json`。它们不是本仓库新训练生成的结果，跨硬件或软件版本的重跑数值可能不同。
+```text
+UNT-STLLM/
+├── data/
+│   ├── taxi_pick/
+│   │   ├── train.npz
+│   │   ├── val.npz
+│   │   └── test.npz
+│   ├── taxi_drop/          # train.npz, val.npz, test.npz
+│   ├── bike_pick/          # train.npz, val.npz, test.npz
+│   └── bike_drop/          # train.npz, val.npz, test.npz
+├── models/
+│   └── gpt2-small/
+│       ├── config.json
+│       └── pytorch_model.bin
+└── run.py
+```
 
-| 任务 | MAE | RMSE | WAPE (%) |
+NYCTaxi uses 266 regional nodes; CHBike uses 250 bicycle stations. Inputs have shape `[B, 12, N, 3]`, containing flow, time of day and day of week. Predictions have shape `[B, 12, N, 1]`.
+
+If the assets already exist under `/hy-tmp/UNT`, copy them into your checkout. These commands preserve the source files and existing destination files:
+
+```bash
+cd /hy-tmp/UNT-STLLM
+mkdir -p data models/gpt2-small
+for task in taxi_pick taxi_drop bike_pick bike_drop; do
+  mkdir -p "data/$task"
+  cp -an "/hy-tmp/UNT/data/$task/." "data/$task/"
+done
+cp -an /hy-tmp/UNT/models/gpt2-small/. models/gpt2-small/
+python run.py check
+```
+
+Adjust the paths to your host. [`configs/assets.json`](configs/assets.json) records the expected file sizes and SHA256 hashes, so the final check also detects stale or incomplete destination files. Alternative locations can be supplied with `--data-root` and `--model-path`. GPT-2 is loaded locally; the runner does not download datasets or weights.
+
+## Reproduce Table II
+
+The fixed protocol is recorded in [`configs/table2.json`](configs/table2.json).
+
+| Setting | Value |
+|---|---|
+| Tasks | `taxi_pick`, `taxi_drop`, `bike_pick`, `bike_drop` |
+| Seeds | 2026, 2027, 2028, 2029, 2030 |
+| Training data | Full supplied training split |
+| Training epochs / batch size | 250 / 20 |
+| Input / forecast length | 12 / 12 steps |
+| Backbone | First five GPT-2-small blocks |
+| Node attention | Bidirectional |
+| Relation bias / LoRA | Final two blocks; LoRA rank 8, alpha 16 |
+| Optimizer / initial learning rate | Ranger / 0.003 |
+| Model selection | Validation MAE |
+
+For a background run on a GPU host:
+
+```bash
+mkdir -p results
+nohup python -u run.py train --device cuda:0 --resume > results/table2_launch.log 2>&1 &
+echo "PID=$!"
+tail -n 60 -F results/table2_launch.log
+```
+
+Use `--tasks taxi_pick` or `--seeds 2026` to run a subset. Keep the same `--output` directory when completing the remaining runs. `--resume` skips completed runs with matching signatures; interrupted runs start again from epoch 1. Run a single training process per output directory.
+
+The Chinese [reproduction guide](docs/复现指南.md) provides the full preprocessing, loss, optimizer and evaluation details. [Validation coverage](docs/验证范围.md) documents the checks performed on the implementation.
+
+## Reference results
+
+These values are means over the five paper runs. Full precision and sample standard deviations are provided in [`configs/reference_metrics.json`](configs/reference_metrics.json). Reference values are separate from results produced by a new run of this repository. Floating-point results can vary across hardware and software environments.
+
+| Task | MAE | RMSE | WAPE (%) |
 |---|---:|---:|---:|
 | NYCTaxi pick-up | 5.126 | 8.879 | 19.394 |
 | NYCTaxi drop-off | 4.921 | 8.614 | 18.779 |
 | CHBike pick-up | 1.990 | 3.074 | 40.090 |
 | CHBike drop-off | 1.879 | 2.775 | 37.980 |
 
-## 代码组织
+Metrics use positive observed flows in the original flow-count scale. Each forecast step is evaluated separately, then averaged over the 12 steps. Normalization statistics are fitted to training inputs.
 
-八个Python职责单元组织模型与实验流程，核心包不依赖原研究项目。
+## Outputs
 
-| 文件 | 职责 |
+```bash
+python run.py summary --output results/table2
+```
+
+Each run stores its protocol, status, epoch metrics and logs under `results/table2/<task>/seed_<seed>/attempt_<number>/`. Summaries include `summary.json`, `by_seed.csv` and `by_task.csv`. A complete Table II reproduction requires all 20 runs and `table2_complete=true`.
+
+WAPE is a fraction in per-seed records and `by_seed.csv`, and a percentage in `by_task.csv` and the reference table. Cross-seed dispersion uses the sample standard deviation. Model selection weights validation batches equally, including the padded final batch; test evaluation removes padded windows.
+
+## Repository structure
+
+| File | Purpose |
 |---|---|
-| `run.py` | 命令行、资产核对、任务编排、完整单元续跑 |
-| `unt_stllm/settings.py` | 固定任务、种子、协议与环境记录 |
-| `unt_stllm/data.py` | NPZ接口、训练scaler、批次与指标 |
-| `unt_stllm/layers.py` | 时间编码、融合、节点关系及低秩投影 |
-| `unt_stllm/network.py` | 变分节点表示、语言骨干与预测头 |
-| `unt_stllm/optimizer.py` | Ranger、梯度中心化和Lookahead |
-| `unt_stllm/training.py` | 损失、验证选模、恢复控制和最终评估 |
-| `unt_stllm/reporting.py` | 阶段日志、心跳、状态与结果汇总 |
+| `run.py` | Command-line interface, asset checks and run orchestration |
+| `unt_stllm/settings.py` | Tasks, seeds, protocol and environment metadata |
+| `unt_stllm/data.py` | NPZ loading, normalization, batches and metrics |
+| `unt_stllm/layers.py` | Calendar encoding, fusion, relations and low-rank projections |
+| `unt_stllm/network.py` | Variational node representation, backbone and prediction head |
+| `unt_stllm/optimizer.py` | Ranger optimizer |
+| `unt_stllm/training.py` | Training objective, validation and final evaluation |
+| `unt_stllm/reporting.py` | Logs, status records and result aggregation |
 
-## 数据、引用与许可
+## Citation and license
 
-数据引用及论文可用性声明草稿见[数据与代码可用性](docs/数据与代码可用性.md)。软件引用元数据见`CITATION.cff`，论文正式书目信息确定后更新。
+Use [`CITATION.cff`](CITATION.cff) for software citation metadata. This repository covers the Table II main-model experiments; data, pretrained weights and experiment outputs are obtained separately.
 
-源代码沿用[S-Lab License 1.0](LICENSE.txt)的非商业使用条款；优化器相关内容另见[第三方来源说明](THIRD_PARTY.md)及[Apache 2.0许可](licenses/Apache-2.0.txt)。仓库名称或代码重构不改变上游许可。
+Source code is provided under [S-Lab License 1.0](LICENSE.txt), which includes non-commercial use terms. Optimizer attribution and other third-party sources are documented in [`THIRD_PARTY.md`](THIRD_PARTY.md). The Apache 2.0 license is included in [`licenses/Apache-2.0.txt`](licenses/Apache-2.0.txt).
+
+For questions, open a [GitHub issue](https://github.com/aGGGBo/UNT-STLLM/issues).
