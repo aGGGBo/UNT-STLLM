@@ -1,0 +1,18 @@
+{
+  "taxi_pick": {
+    "bytes": 283187,
+    "sha256": "a5956daac1281961d37cf0b393deea54265cb0d16bc06edff87bdc75d13cf84f"
+  },
+  "taxi_drop": {
+    "bytes": 283187,
+    "sha256": "d87737bf83ce0ad92bdfea66fb672fb6c9edc80e5a23f021e7dcbbba396f82e1"
+  },
+  "bike_pick": {
+    "bytes": 250161,
+    "sha256": "a044ef0b60798d09c1de5bb7adc2aa281f3e2f714fdebef954d79db6dafdcc96"
+  },
+  "bike_drop": {
+    "bytes": 250161,
+    "sha256": "83e8efbcf6045986897e51f472351f8a72d892a9ef26002e10e75d09485c53a8"
+  }
+}

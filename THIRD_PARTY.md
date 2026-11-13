@@ -24,3 +24,10 @@
 GPT2由[OpenAI](https://github.com/openai/gpt-2)提出，本实现通过[Hugging Face Transformers](https://github.com/huggingface/transformers)加载用户已有的GPT2-small文件。Transformers使用Apache License 2.0，GPT2模型与权重的许可由其权利人及分发渠道规定。仓库不包含、代授予或变更预训练权重许可。
 
 PyTorch、NumPy及其他依赖分别遵循其自身许可。`requirements.txt`列出复现所需的直接依赖，并不将它们打包进本仓库。
+
+
+## 当前匹配预算基线
+
+`third_party/stllm_plus/model.py`来自[kethmih/ST-LLM-Plus固定提交](https://github.com/kethmih/ST-LLM-Plus/blob/ef1a570a6a134e596c414852dc041200511af2ab/model_ST_LLM_plus.py)。分发副本去除注释/docstring并整理排版，执行AST不变。源提交和双重SHA256见同目录source.json，根目录S-Lab许可证覆盖相应来源通知。
+
+官方模型使用PEFT0.10.0，按其Apache2.0许可使用；未重新分发PEFT、Transformers或GPT-2权重。新的训练、迁移与收集编排由UNT-STLLM实现，保留官方图输入与模型结构，不调用官方训练脚本。

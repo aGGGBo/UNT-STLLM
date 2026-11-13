@@ -1,0 +1,8 @@
+{
+  "repository": "https://github.com/kethmih/ST-LLM-Plus",
+  "commit": "ef1a570a6a134e596c414852dc041200511af2ab",
+  "source_path": "model_ST_LLM_plus.py",
+  "original_sha256": "87e65d78d5b8b02bb6e9c4bfd9675634c4dce910bcab5128a2586c4e5067dc1c",
+  "distributed_sha256": "be95b69f2ddd1030fc68190d86a6918f62269778316becd4f929d6edbe6b8032",
+  "changes": "Removed comments and docstrings, normalized source layout. Executable AST retained."
+}

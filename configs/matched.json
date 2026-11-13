@@ -1,0 +1,29 @@
+{
+  "id": "matched-20261113",
+  "full_units": 60,
+  "transfer_pipelines": 20,
+  "transfer_stages": 60,
+  "full_conditions": [
+    "main",
+    "base",
+    "stllm_plus"
+  ],
+  "seeds": [
+    2026,
+    2027,
+    2028,
+    2029,
+    2030
+  ],
+  "epochs": 250,
+  "batch_size": 20,
+  "source_support": 1.0,
+  "target_support": 0.1,
+  "target_optimizer_steps": 3250,
+  "test_selection": "validation MAE",
+  "source_test": false,
+  "smoke_test": false,
+  "warm_start_optimizer": false,
+  "full_host": "RTX 5090",
+  "transfer_host": "RTX 4090"
+}

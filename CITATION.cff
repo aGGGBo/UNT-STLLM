@@ -2,10 +2,11 @@ cff-version: 1.2.0
 message: "Please cite this software and the associated UNT-STLLM paper when available."
 type: software
 title: UNT-STLLM
-version: 0.1.0
+version: 0.2.0
+date-released: 2026-11-13
 repository-code: https://github.com/aGGGBo/UNT-STLLM
 url: https://github.com/aGGGBo/UNT-STLLM
-abstract: "Reproduction of the UNT-STLLM results in Table II across four traffic forecasting tasks."
+abstract: "Reproduction of matched-budget forecasting, fixed-support adaptation, and original four-task UNT-STLLM experiments."
 authors:
   - family-names: Xiang
     given-names: Fengtao
